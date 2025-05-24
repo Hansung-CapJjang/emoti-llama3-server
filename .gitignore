@@ -1,0 +1,12 @@
+# 대용량 파일 무시
+*.zip
+*.tgz
+*.pt
+*.bin
+*.safetensors
+emoti-lora-ko-8b/
+ngrok-stable-linux-amd64.zip*
+ngrok-v3-stable-linux-amd64.tgz
+emoti_env/
+__pycache__/
+
