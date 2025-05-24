@@ -22,6 +22,6 @@ base_model = AutoModelForCausalLM.from_pretrained(
 )
 
 model = PeftModel.from_pretrained(base_model, lora_dir)
-model = model.merge_and_unload()  # 💡 LoRA 병합
-model.save_pretrained(output_dir)  # ✅ 병합된 모델 저장
+model = model.merge_and_unload()  # LoRA 병합
+model.save_pretrained(output_dir)  # 병합된 모델 저장
 tokenizer.save_pretrained(output_dir)

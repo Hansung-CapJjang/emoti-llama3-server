@@ -40,7 +40,7 @@ def clean_response(text: str) -> str:
 
     # 영어 문장, 특수문자 반복 제거
     text = re.sub(r"[a-zA-Z]{4,}", "", text)
-    text = re.sub(r"[!?.]{2,}", ".", text)                # !!! → .
+    text = re.sub(r"[!?.]{2,}", ".", text)                # !!! -> .
     text = re.sub(r"[~^=+#/\\:;\"\'|\[\](){}]", "", text)  # 기타 특수문자 제거
     text = re.sub(r"\d+[\/\d+]*", "", text)                # 1/2/3/4 제거
     text = re.sub(r"\s+", " ", text).strip()
@@ -53,7 +53,7 @@ def clean_response(text: str) -> str:
 
 
 # 채팅 시작
-print("💬 상담 챗봇에 오신 것을 환영합니다. '종료'라고 입력하면 종료됩니다.\n")
+print("상담 챗봇에 오신 것을 환영합니다. '종료'라고 입력하면 종료됩니다.\n")
 
 while True:
     user_input = input("내담자: ").strip()
@@ -87,7 +87,7 @@ while True:
     response_clean = clean_response(response_raw)
 
     if len(response_clean) < 5:
-        print("\n❌ 유의미한 상담사 응답을 생성하지 못했습니다.\n")
+        print("\nX : 유의미한 상담사 응답을 생성하지 못했습니다.\n")
     else:
         print(f"\n상담사: {response_clean}\n")
         dialogue_history += f" {response_clean}\n"
