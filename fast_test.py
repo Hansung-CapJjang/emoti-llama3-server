@@ -5,7 +5,7 @@ from peft import PeftModel
 
 # 모델 경로
 base_model_id = "MLP-KTLim/llama-3-Korean-Bllossom-8B"
-lora_repo = "./experiments/test-emoti-real/emoti-lora-8b-v3/checkpoint-2700"
+lora_repo = "./experiments/test-emoti-real/emoti-lora-8b-v3/checkpoint-4700"
 
 # 토크나이저
 tokenizer = AutoTokenizer.from_pretrained(base_model_id, use_fast=True)

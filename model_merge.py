@@ -4,8 +4,8 @@ from transformers import AutoModelForCausalLM, BitsAndBytesConfig
 import torch
 
 base_model_id = "MLP-KTLim/llama-3-Korean-Bllossom-8B"
-lora_dir = "./experiments/test-emoti-real/emoti-lora-8b-v2"
-output_dir = "./emoti-lora-ko-8b"
+lora_dir = "./experiments/test-emoti-real/emoti-lora-8b-v3"
+output_dir = "./emoti-chatbot-lora-ko-8b"
 
 bnb_config = BitsAndBytesConfig(
     load_in_4bit=True,

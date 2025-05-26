@@ -4,7 +4,7 @@ from huggingface_hub import HfApi, HfFolder, create_repo, upload_folder
 token = "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"
 
 # 2. repo_id = "사용자명/리포지토리명"
-repo_id = "sseyeonn/emoti-lora-ko-8b"
+repo_id = "sseyeonn/emoti-chatbot-lora-ko-8b"
 
 api = HfApi()
 
@@ -13,7 +13,7 @@ api.create_repo(repo_id=repo_id, exist_ok=True, token=token)
 
 # 3. 모델 폴더 업로드
 upload_folder(
-    folder_path="./emoti-lora-ko-8b",  # 병합 모델 경로
+    folder_path="./emoti-chatbot-lora-ko-8b",  # 병합 모델 경로
     repo_id=repo_id,
     repo_type="model",
     token=token

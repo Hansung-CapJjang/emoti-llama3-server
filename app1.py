@@ -1,3 +1,5 @@
+import os
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 import torch
 from fastapi import FastAPI, Request
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
@@ -8,7 +10,7 @@ from typing import List
 app = FastAPI()
 
 # 모델 ID 및 QLoRA 설정
-MODEL_ID = "sseyeonn/emoti-lora-ko-8b"
+MODEL_ID = "sseyeonn/emoti-chatbot-lora-ko-8b"
 
 bnb_config = BitsAndBytesConfig(
     load_in_4bit=True,
@@ -24,8 +26,10 @@ tokenizer.padding_side = "left"
 model = AutoModelForCausalLM.from_pretrained(
     MODEL_ID,
     quantization_config=bnb_config,
-    device_map="auto"
+    device_map={"": 1},  # GPU 1번 지정
+    low_cpu_mem_usage=True
 )
+
 model.eval()
 
 # 입력 데이터 구조 정의
@@ -77,26 +81,31 @@ def clean_response(text: str) -> str:
 # API 엔드포인트
 @app.post("/generate")
 async def generate(data: ChatRequest):
-    prompt = build_prompt(data)
-    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+    try:
+        prompt = build_prompt(data)
+        inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
 
-    with torch.no_grad():
-        outputs = model.generate(
-            **inputs,
-            max_new_tokens=128,
-            temperature=0.7,
-            top_p=0.9,
-            repetition_penalty=1.2,
-            no_repeat_ngram_size=4,
-            eos_token_id=tokenizer.eos_token_id,
-            pad_token_id=tokenizer.pad_token_id,
-        )
+        with torch.inference_mode():  # ✅ 변경: 더 안전한 추론 모드
+            outputs = model.generate(
+                **inputs,
+                max_new_tokens=128,
+                temperature=0.7,
+                top_p=0.9,
+                repetition_penalty=1.2,
+                no_repeat_ngram_size=4,
+                early_stopping=True,  # ✅ 추가: 너무 긴 출력 방지
+                eos_token_id=tokenizer.eos_token_id,
+                pad_token_id=tokenizer.pad_token_id,
+            )
 
-    decoded = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    result = decoded.split("상담사:")[-1]
-    result = clean_response(result)
+        decoded = tokenizer.decode(outputs[0], skip_special_tokens=True)
+        result = decoded.split("상담사:")[-1]
+        result = clean_response(result)
 
-    return {"output": result}
+        return {"output": result}
+
+    except Exception as e:  # ✅ 예외 처리 추가
+        return {"error": f"모델 응답 생성 중 오류 발생: {str(e)}"}
 
 # 실행 안내
 #if __name__ == "__main__":
