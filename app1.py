@@ -26,7 +26,7 @@ tokenizer.padding_side = "left"
 model = AutoModelForCausalLM.from_pretrained(
     MODEL_ID,
     quantization_config=bnb_config,
-    device_map={"": 1},  # GPU 1번 지정
+    device_map={"": 0},  # GPU 1번 지정
     low_cpu_mem_usage=True
 )
 
